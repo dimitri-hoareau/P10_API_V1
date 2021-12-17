@@ -15,11 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
 
-from api_tracking_system.views import ContributorsAPIView
+from api_tracking_system.views import ContributorsViewset, ProjectViewset, IssueViewset, CommentsViewset
 
+router = routers.SimpleRouter()
+
+router.register('contributors', ContributorsViewset, basename='contributors')
+router.register('project', ProjectViewset, basename='project')
+router.register('issue', IssueViewset, basename='issue')
+router.register('comments', CommentsViewset, basename='comments')
+
+ 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/contributors/', ContributorsAPIView.as_view())
+    path('api/', include(router.urls))  
 ]
+ 

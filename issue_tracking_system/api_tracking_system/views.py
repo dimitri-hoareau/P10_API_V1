@@ -1,15 +1,33 @@
 from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
+from .models import Contributors, Project, Issue, Comments
+from .serializers import ContributorsSerializer, IssueSerializer, ProjectSerializer, CommentsSerializer
+ 
 
+class ContributorsViewset(ModelViewSet):
+ 
+    serializer_class = ContributorsSerializer
+ 
+    def get_queryset(self):
+        return Contributors.objects.all()
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
+class ProjectViewset(ModelViewSet):
  
-from .models import Contributors
-from .serializers import ContributorsSerializer
+    serializer_class = ProjectSerializer
  
-class ContributorsAPIView(APIView):
+    def get_queryset(self):
+        return Project.objects.all()
+
+class IssueViewset(ModelViewSet):
  
-    def get(self, *args, **kwargs):
-        contributors = Contributors.objects.all()
-        serializer = ContributorsSerializer(contributors, many=True)
-        return Response(serializer.data)
+    serializer_class = IssueSerializer
+ 
+    def get_queryset(self):
+        return Issue.objects.all()
+
+class CommentsViewset(ModelViewSet):
+ 
+    serializer_class = CommentsSerializer
+ 
+    def get_queryset(self):
+        return Comments.objects.all()
