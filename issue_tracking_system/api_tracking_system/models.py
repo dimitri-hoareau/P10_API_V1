@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class Contributors(models.Model):
     # ROLE_CHOICES = (
@@ -18,7 +19,8 @@ class Project(models.Model):
     description = models.TextField(blank=True)
     type = models.CharField(max_length=255)
     # author
-
+    # author = models.ForeignKey(
+    #     to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

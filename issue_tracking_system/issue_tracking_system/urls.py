@@ -16,8 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from api_tracking_system.views import ContributorsViewset, ProjectViewset, IssueViewset, CommentsViewset
+from api_tracking_system.views import ContributorsViewset, ProjectViewset, IssueViewset, CommentsViewset, RegisterApi
 
 router = routers.SimpleRouter()
 
@@ -30,6 +31,13 @@ router.register('comments', CommentsViewset, basename='comments')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
+    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('login', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('signup/', RegisterApi.as_view(), name='signup'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include(router.urls))  
 ]
  
+
+
+# https://python.plainenglish.io/django-rest-framework-jwt-auth-with-login-and-register-77f830cd8789
