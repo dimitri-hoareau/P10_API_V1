@@ -6,9 +6,7 @@ class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     type = models.CharField(max_length=255)
-
-    # author = models.ForeignKey(
-    #     to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -38,7 +36,7 @@ class Issue(models.Model):
 
 
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE, null=True)
-    # author
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # assignee
 
     def __str__(self):
@@ -48,10 +46,15 @@ class Issue(models.Model):
 class Comments(models.Model):
 
     description = models.TextField(blank=True)
-    created_time = models.DateTimeField(auto_now_add=True)
-    
-    # issue = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
-    # author
+    created_time = models.DateTimeField(auto_now_add=True)    
+    issue = models.ForeignKey(to=Issue, on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.description
+
+
+
+
+# table through
+# https://docs.djangoproject.com/fr/4.0/topics/db/models/
