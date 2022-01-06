@@ -12,25 +12,35 @@ class ContributorsSerializer(ModelSerializer):
  
     class Meta:
         model = Contributors
-        fields = ['id', 'permission']
+        fields = ['id', 'permission', 'role', 'project']
 
 class ProjectSerializer(ModelSerializer):
  
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', 'type']
+        fields = ['id', 'title', 'description', 'type', 'author']
 
 class IssueSerializer(ModelSerializer):
+
+    # project = ProjectSerializer()
  
     class Meta:
         model = Issue
-        fields = ['id', 'title', 'description', 'tag', 'status', 'created_time']
+        fields = ['id', 'title', 'description', 'tag', 'status', 'created_time', 'priority', 'project', 'author', 'assignee' ]
 
 class CommentsSerializer(ModelSerializer):
  
     class Meta:
         model = Comments
-        fields = ['id', 'description', 'created_time']
+        fields = ['id', 'description', 'created_time', 'issue', 'author']
+
+
+# class IssuesFromProjectSerialize(ModelSerializer):
+
+#         class Meta:
+#             model = Comments
+#             fields = ['id', 'description', 'created_time', 'issue', 'author']
+
 
 
 
@@ -55,3 +65,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+
+
+
+
+#comment avoir les infos détaillées pour author ?

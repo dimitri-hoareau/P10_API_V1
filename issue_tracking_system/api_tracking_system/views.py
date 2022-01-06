@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Contributors, Project, Issue, Comments
 from .serializers import ContributorsSerializer, IssueSerializer, ProjectSerializer, CommentsSerializer, RegisterSerializer, UserSerializer
@@ -14,12 +15,12 @@ class ContributorsViewset(ModelViewSet):
     def get_queryset(self):
         return Contributors.objects.all()
 
-class ProjectViewset(ModelViewSet):
+# class ProjectViewset(ModelViewSet):
  
-    serializer_class = ProjectSerializer
+#     serializer_class = ProjectSerializer
  
-    def get_queryset(self):
-        return Project.objects.all()
+#     def get_queryset(self):
+#         return Project.objects.all()
 
 class IssueViewset(ModelViewSet):
  
@@ -47,3 +48,31 @@ class RegisterApi(generics.GenericAPIView):
             context=self.get_serializer_context()).data,
             "message": "User Created Successfully.  Now perform Login to get your token",
         })
+
+
+class ProjectViewset(APIView):
+ 
+    def get(self, *args, **kwargs):
+
+        projects = Project.objects.all()
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
+ 
+
+class IssueFromProjectViewset(APIView):
+ 
+    def get(self, request, id, *args, **kwargs):
+
+        print(id)
+
+        issues = Issue.objects.filter(project=id)
+        # projects = Project.objects.all()
+        print(issues)
+
+        serializer = IssueSerializer(issues, many=True)
+        return Response(serializer.data)
+
+
+
+# faire un queryset avec filtre dasn l'url  ?
+# API views plus facilement custom 

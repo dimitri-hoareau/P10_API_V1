@@ -1,8 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-class User(models.Model):
-    name = models.CharField(max_length=128)
 
 class Project(models.Model):
 
@@ -23,10 +21,11 @@ class Contributors(models.Model):
     permission = models.CharField(max_length=255)
     role = models.CharField(max_length=11, choices=ROLE_CHOICES)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE, null=True)
-    # user = models.ForeignKey(
-    #     to=settings.AUTH_USER_MODEL, 
-    #     related_name="followed_by", 
-    #     on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL, 
+        related_name="followed_by", 
+        on_delete=models.CASCADE,
+        default=1) # supprimer le defautl
 
 
 class Issue(models.Model):
@@ -62,8 +61,9 @@ class Comments(models.Model):
 
 
 
-
-# table through
-# https://docs.djangoproject.com/fr/4.0/topics/db/models/
+# model c'est bon ?
+# table through contributor ?
 # assignee ?
-#user : ça supprime user dans django admin
+
+
+# endpoint /projects/{id}/users/    ou project id issue : la table project n'a pas d'issue

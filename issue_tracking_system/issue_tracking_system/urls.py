@@ -18,12 +18,12 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from api_tracking_system.views import ContributorsViewset, ProjectViewset, IssueViewset, CommentsViewset, RegisterApi
+from api_tracking_system.views import ContributorsViewset, ProjectViewset, IssueViewset, CommentsViewset, RegisterApi, IssueFromProjectViewset
 
 router = routers.SimpleRouter()
 
 router.register('contributors', ContributorsViewset, basename='contributors')
-router.register('project', ProjectViewset, basename='project')
+# router.register('projects', ProjectViewset, basename='project')
 router.register('issue', IssueViewset, basename='issue')
 router.register('comments', CommentsViewset, basename='comments')
 
@@ -35,9 +35,18 @@ urlpatterns = [
     path('login', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('signup/', RegisterApi.as_view(), name='signup'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/', include(router.urls))  
+    path('', include(router.urls)),
+
+    # path('projects/<id>/issues/', IssueFromProjectViewset.as_view(), name='issue_from_projet')
+    path('projects/', ProjectViewset.as_view(), name='project'),
+    path('projects/<id>/issues', IssueFromProjectViewset.as_view(), name='issue_from_projet')
+
+
 ]
  
 
 
 # https://python.plainenglish.io/django-rest-framework-jwt-auth-with-login-and-register-77f830cd8789
+# custom url avec routers avec de nouvelles vues
+# enlever api des urls
+# voir classes APIViews
