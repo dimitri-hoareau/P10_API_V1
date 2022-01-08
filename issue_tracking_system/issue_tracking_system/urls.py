@@ -18,7 +18,7 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from api_tracking_system.views import ContributorsViewset, ProjectViewset, IssueViewset, CommentsViewset, RegisterApi, IssueFromProjectViewset
+from api_tracking_system.views import ContributorsViewset, ProjectViewset, IssueViewset, CommentsViewset, RegisterApi, IssuesFromProjectViewset, IssueFromProjectViewset
 
 router = routers.SimpleRouter()
 
@@ -31,15 +31,15 @@ router.register('comments', CommentsViewset, basename='comments')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('login', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('signup/', RegisterApi.as_view(), name='signup'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', include(router.urls)),
 
-    # path('projects/<id>/issues/', IssueFromProjectViewset.as_view(), name='issue_from_projet')
+    # path('projects/<id>/issues/', IssuesFromProjectViewset.as_view(), name='issues_from_projet')
     path('projects/', ProjectViewset.as_view(), name='project'),
-    path('projects/<id>/issues', IssueFromProjectViewset.as_view(), name='issue_from_projet')
+    path('projects/<id>/issues', IssuesFromProjectViewset.as_view(), name='issues_from_projet'),
+    path('projects/<id>/issues/<issue_id>', IssueFromProjectViewset.as_view(), name='issue_from_projet')
 
 
 ]

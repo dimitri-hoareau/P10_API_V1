@@ -6,6 +6,7 @@ from .serializers import ContributorsSerializer, IssueSerializer, ProjectSeriali
 from rest_framework import generics, permissions, mixins
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from rest_framework import status
  
 
 class ContributorsViewset(ModelViewSet):
@@ -57,22 +58,47 @@ class ProjectViewset(APIView):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = ProjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
  
 
-class IssueFromProjectViewset(APIView):
+class IssuesFromProjectViewset(APIView):
  
     def get(self, request, id, *args, **kwargs):
 
-        print(id)
-
         issues = Issue.objects.filter(project=id)
-        # projects = Project.objects.all()
-        print(issues)
-
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data)
+    
+    def post(self, request, id, *args, **kwargs):
+        issues = Issue.objects.filter(project=id)
+        serializer = IssueSerializer(issues, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class IssueFromProjectViewset(APIView):
+ 
+    def delete(self, request, id, issue_id, format=None):
+        print("==========================================================")
+        print(id)
+        print(issue_id)
+        issue = Issue.objects.filter(id=issue_id)
+        print(issue)
+        issue.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 
 # faire un queryset avec filtre dasn l'url  ?
 # API views plus facilement custom 
+# https://www.django-rest-framework.org/tutorial/3-class-based-views/
+#rename IssurFromProjectList, IssueFromProjectDetail
