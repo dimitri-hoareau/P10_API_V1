@@ -99,10 +99,30 @@ class UserFromProjectViewsetList(APIView):
  
     def get(self, request, id, *args, **kwargs):
 
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
+        contributor = Contributors.objects.filter(project=id)
+        serializer = ContributorsSerializer(contributor, many=True)
         return Response(serializer.data)
     
+    def post(self, request, id, *args, **kwargs):
+        serializer = ContributorsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserFromProjectViewsetDetail(APIView):
+    
+ 
+    def get(self, request, id, user_id, *args, **kwargs):
+        contributor = Contributors.objects.filter(project=id).filter(user=user_id)
+        serializer = ContributorsSerializer(contributor, many=True)
+        return Response(serializer.data)
+
+
+    def delete(self, request, id, user_id, format=None):
+        contributor = Contributors.objects.filter(project=id).filter(user=user_id)
+        contributor.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class IssueFromProjectViewsetList(APIView):
@@ -186,21 +206,6 @@ class CommentsFromUserFromProjectViewsetDetail(APIView):
 
 
 
-
-
-#project/1/issue/5  => pareil que issue    
-
-# faire un queryset avec filtre dasn l'url  ?
-# virer les endpoitns issues, comments... ?
-# API views plus facilement custom 
-# https://www.django-rest-framework.org/tutorial/3-class-based-views/
-#rename IssurFromProjectList, IssueFromProjectDetail*
-
-
-# endpoitns OK :  
-# PROBLEME AVEC LES USERS endpoints  pas de tableau
-
-
-# probleme endpoint 8
-# Projects : entité qui stocke toutes les informations concernant chaque projet/produit/application en cours de développement ou de gestion dans l'entreprise. Elle entretient une relation plusieurs-à-plusieurs avec la table des utilisateurs, via une table de jonction appelée Contributors.
-# Par souci de simplicité, nous avons également ajouté une relation un-à-plusieurs avec la table Users, de sorte que nous pouvons enregistrer l'auteur/le responsable/le créateur du projet. Vous pouvez également gérer ce cas à l'aide du champ d'autorisation de la classe Contributor
+# http://127.0.0.1:8000/projects/1/users : rajoute pas a un projet spécifique , forcer l'id du project (voir avec postman)
+#bloquer les contributor par projet, une seule fois !
+# ou enlever project dans le serialiser ?

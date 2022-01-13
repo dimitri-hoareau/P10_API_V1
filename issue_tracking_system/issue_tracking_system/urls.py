@@ -40,9 +40,10 @@ urlpatterns = [
     path('projects/<id>/', ProjectViewsetDetail.as_view(), name='project_detail'),
     path('projects/<id>/issues', IssueFromProjectViewsetList.as_view(), name='issues_from_projet'),
     path('projects/<id>/users', UserFromProjectViewsetList.as_view(), name='users_from_projet'),
+    path('projects/<id>/users/<user_id>', UserFromProjectViewsetDetail.as_view(), name='users_from_projet_detail'),
     path('projects/<id>/issues/<issue_id>', IssueFromProjectViewsetDetail.as_view(), name='issue_from_projet'),
-    path('projects/<id>/issues/<issue_id>/comments', CommentsFromUserFromProjectViewsetList.as_view(), name='comments_from_users_from_projet'),
-    path('projects/<id>/issues/<issue_id>/comments/<comment_id>', CommentsFromUserFromProjectViewsetDetail.as_view(), name='comments_from_users_from_projet'),
+    path('projects/<id>/issues/<issue_id>/comments', CommentsFromUserFromProjectViewsetList.as_view(), name='comments_from_users_from_projet_list'),
+    path('projects/<id>/issues/<issue_id>/comments/<comment_id>', CommentsFromUserFromProjectViewsetDetail.as_view(), name='comments_from_users_from_projet_detail'),
 
 
 ]
