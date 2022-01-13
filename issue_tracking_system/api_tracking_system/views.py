@@ -105,8 +105,9 @@ class UserFromProjectViewsetList(APIView):
     
     def post(self, request, id, *args, **kwargs):
         serializer = ContributorsSerializer(data=request.data)
+        project = Project.objects.get(id=id)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(project=project)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -207,5 +208,6 @@ class CommentsFromUserFromProjectViewsetDetail(APIView):
 
 
 # http://127.0.0.1:8000/projects/1/users : rajoute pas a un projet spécifique , forcer l'id du project (voir avec postman)
+#le faire en dur et ajouter id du projet
 #bloquer les contributor par projet, une seule fois !
 # ou enlever project dans le serialiser ?

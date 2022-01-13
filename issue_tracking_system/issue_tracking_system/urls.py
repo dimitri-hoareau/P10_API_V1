@@ -21,10 +21,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api_tracking_system.views import *
 router = routers.SimpleRouter()
 
-router.register('contributors', ContributorsViewset, basename='contributors')
-# router.register('projects', ProjectViewset, basename='project')
-router.register('issue', IssueViewset, basename='issue')
-router.register('comments', CommentsViewset, basename='comments')
+# router.register('contributors', ContributorsViewset, basename='contributors')
+# # router.register('projects', ProjectViewset, basename='project')
+# router.register('issue', IssueViewset, basename='issue')
+# router.register('comments', CommentsViewset, basename='comments')
 
  
 urlpatterns = [
@@ -35,7 +35,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', include(router.urls)),
 
-    # path('projects/<id>/issues/', IssuesFromProjectViewset.as_view(), name='issues_from_projet')
     path('projects/', ProjectViewsetList.as_view(), name='project_list'),
     path('projects/<id>/', ProjectViewsetDetail.as_view(), name='project_detail'),
     path('projects/<id>/issues', IssueFromProjectViewsetList.as_view(), name='issues_from_projet'),
