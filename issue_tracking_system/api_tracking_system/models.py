@@ -64,6 +64,7 @@ class Comments(models.Model):
 # model c'est bon ?
 # table through contributor ?
 # assignee ?
+# project, on a author, mais comment savoir qui sont les contributor ?
 
 
 # endpoint /projects/{id}/users/    ou project id issue : la table project n'a pas d'issue
