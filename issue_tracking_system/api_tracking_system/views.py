@@ -100,13 +100,28 @@ class UserFromProjectViewsetList(APIView):
     def get(self, request, id, *args, **kwargs):
 
         contributor = Contributors.objects.filter(project=id)
+        # for user in contributor:
+        #     print(user.user)
         serializer = ContributorsSerializer(contributor, many=True)
         return Response(serializer.data)
     
     def post(self, request, id, *args, **kwargs):
+        contributors = Contributors.objects.filter(project=id)
         serializer = ContributorsSerializer(data=request.data)
         project = Project.objects.get(id=id)
         if serializer.is_valid():
+            validatedData = serializer.validated_data
+            user_name = validatedData.get('user')
+            for contributor in contributors:
+                print(contributor.user)
+                print(type(contributor.user))
+                print(user_name)
+                print(type(user_name))
+                if user_name == contributor.user:
+                    print(str(contributor.user) + "already on this project")
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+                
             serializer.save(project=project)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -207,7 +222,10 @@ class CommentsFromUserFromProjectViewsetDetail(APIView):
 
 
 
-# http://127.0.0.1:8000/projects/1/users : rajoute pas a un projet spécifique , forcer l'id du project (voir avec postman)
-#le faire en dur et ajouter id du projet
-#bloquer les contributor par projet, une seule fois !
-# ou enlever project dans le serialiser ?
+# http://127.0.0.1:8000/projects/1/users : rajoute pas a un projet spécifique , forcer l'id du project (voir avec postman)  OK
+#le faire en dur et ajouter id du projet  OK
+
+#bloquer les contributor par projet, une seule fois ! OK
+
+# message erreur si on ne met pas le bon id de projet c'est mieux ???
+#supprimer varaible initilisé en argument ?
