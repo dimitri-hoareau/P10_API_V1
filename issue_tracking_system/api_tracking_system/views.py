@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import status
 from django.http import Http404
+from rest_framework.permissions import IsAuthenticated
+from api_tracking_system.permissions import IsAdminAuthenticated
  
 
 class ContributorsViewset(ModelViewSet):
@@ -17,19 +19,19 @@ class ContributorsViewset(ModelViewSet):
     def get_queryset(self):
         return Contributors.objects.all()
 
-class IssueViewset(ModelViewSet):
+# class IssueViewset(ModelViewSet):
  
-    serializer_class = IssueSerializer
+#     serializer_class = IssueSerializer
  
-    def get_queryset(self):
-        return Issue.objects.all()
+#     def get_queryset(self):
+#         return Issue.objects.all()
 
-class CommentsViewset(ModelViewSet):
+# class CommentsViewset(ModelViewSet):
  
-    serializer_class = CommentsSerializer
+#     serializer_class = CommentsSerializer
  
-    def get_queryset(self):
-        return Comments.objects.all()
+#     def get_queryset(self):
+#         return Comments.objects.all()
 
 #Register API
 class RegisterApi(generics.GenericAPIView):
@@ -46,9 +48,11 @@ class RegisterApi(generics.GenericAPIView):
 
 
 class ProjectViewsetList(APIView):
- 
-    def get(self, *args, **kwargs):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request,  *args, **kwargs):
+
+        print(type(request.user))
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
@@ -61,6 +65,7 @@ class ProjectViewsetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProjectViewsetDetail(APIView):
+    permission_classes =  [IsAdminAuthenticated]
 
     def get_object(self, id):
         try:
@@ -229,3 +234,5 @@ class CommentsFromUserFromProjectViewsetDetail(APIView):
 
 # message erreur si on ne met pas le bon id de projet c'est mieux ???
 #supprimer varaible initilisé en argument ?
+
+# dossier dans postman

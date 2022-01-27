@@ -18,7 +18,8 @@ class ProjectSerializer(ModelSerializer):
  
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', 'type', 'author']
+        fields = ['id', 'title', 'description', 'type']
+        # serializers.save()
 
 class IssueSerializer(ModelSerializer):
 
@@ -71,3 +72,5 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 #comment avoir les infos détaillées pour author ?
+
+#         # serializers.save() overiding serialiser pour l'author
