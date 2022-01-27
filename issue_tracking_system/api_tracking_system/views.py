@@ -163,7 +163,7 @@ class IssueFromProjectViewsetList(APIView):
 
 class IssueFromProjectViewsetDetail(APIView):
 
-
+    permission_classes =  [IsAdminAuthenticated]
     def get(self, request, id, issue_id, *args, **kwargs):
         issues = Issue.objects.filter(id=issue_id)
         serializer = IssueSerializer(issues, many=True)
