@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
-from api_tracking_system.permissions import IsAdminAuthenticated
+from api_tracking_system.permissions import IsAdminAuthenticated, ProjectIsAuthorOrReadOnly
  
 
 class ContributorsViewset(ModelViewSet):
@@ -65,17 +65,21 @@ class ProjectViewsetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProjectViewsetDetail(APIView):
-    permission_classes =  [IsAdminAuthenticated]
+    permission_classes =  [ProjectIsAuthorOrReadOnly]
 
-    def get_object(self, id):
+    def get_object(self, id, method):
         try:
-            return Project.objects.filter(id=id)
+            obj = Project.objects.get(id=id)
+            self.check_object_permissions(self.request, obj)
+            if method == "get" or method == "delete":
+                obj = Project.objects.filter(id=id)
+            return obj
         except Project.DoesNotExist:
             raise Http404
  
     def get(self, request, id, *args, **kwargs):
 
-        projects = self.get_object(id)
+        projects = self.get_object(id, "get")
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
@@ -87,7 +91,8 @@ class ProjectViewsetDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id, format=None):
-        project = Project.objects.get(id=id)
+        # project = Project.objects.get(id=id)
+        project = self.get_object(id, "put")
         serializer = ProjectSerializer(project, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -95,7 +100,7 @@ class ProjectViewsetDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id, format=None):
-        project = self.get_object(id)
+        project = self.get_object(id, "delete")
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -235,4 +240,4 @@ class CommentsFromUserFromProjectViewsetDetail(APIView):
 # message erreur si on ne met pas le bon id de projet c'est mieux ???
 #supprimer varaible initilisé en argument ?
 
-# dossier dans postman
+# expiraition token
