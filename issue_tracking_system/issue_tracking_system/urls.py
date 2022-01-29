@@ -21,7 +21,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api_tracking_system.views import *
 router = routers.SimpleRouter()
 
-router.register('contributors', ContributorsViewset, basename='contributors')
+# router.register('contributors', ContributorsViewset, basename='contributors')
 # # router.register('projects', ProjectViewset, basename='project')
 # router.register('issue', IssueViewset, basename='issue')
 # router.register('comments', CommentsViewset, basename='comments')
@@ -34,12 +34,11 @@ urlpatterns = [
     path('signup/', RegisterApi.as_view(), name='signup'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', include(router.urls)),
-
     path('projects/', ProjectViewsetList.as_view(), name='project_list'),
     path('projects/<id>/', ProjectViewsetDetail.as_view(), name='project_detail'),
-    path('projects/<id>/issues', IssueFromProjectViewsetList.as_view(), name='issues_from_projet'),
     path('projects/<id>/users', UserFromProjectViewsetList.as_view(), name='users_from_projet'),
     path('projects/<id>/users/<user_id>', UserFromProjectViewsetDetail.as_view(), name='users_from_projet_detail'),
+    path('projects/<id>/issues', IssueFromProjectViewsetList.as_view(), name='issues_from_projet'),
     path('projects/<id>/issues/<issue_id>', IssueFromProjectViewsetDetail.as_view(), name='issue_from_projet'),
     path('projects/<id>/issues/<issue_id>/comments', CommentsFromUserFromProjectViewsetList.as_view(), name='comments_from_users_from_projet_list'),
     path('projects/<id>/issues/<issue_id>/comments/<comment_id>', CommentsFromUserFromProjectViewsetDetail.as_view(), name='comments_from_users_from_projet_detail'),

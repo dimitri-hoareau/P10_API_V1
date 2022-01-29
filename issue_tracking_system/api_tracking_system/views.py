@@ -9,29 +9,10 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
-from api_tracking_system.permissions import IsAdminAuthenticated, ProjectIsAuthorOrReadOnly
+from api_tracking_system.permissions import ProjectIsAuthorOrReadOnly, IssueIsAuthorOrReadOnly, CommentsIsAuthorOrReadOnly
  
 
-class ContributorsViewset(ModelViewSet):
- 
-    serializer_class = ContributorsSerializer
- 
-    def get_queryset(self):
-        return Contributors.objects.all()
 
-# class IssueViewset(ModelViewSet):
- 
-#     serializer_class = IssueSerializer
- 
-#     def get_queryset(self):
-#         return Issue.objects.all()
-
-# class CommentsViewset(ModelViewSet):
- 
-#     serializer_class = CommentsSerializer
- 
-#     def get_queryset(self):
-#         return Comments.objects.all()
 
 #Register API
 class RegisterApi(generics.GenericAPIView):
@@ -65,7 +46,7 @@ class ProjectViewsetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProjectViewsetDetail(APIView):
-    permission_classes =  [ProjectIsAuthorOrReadOnly]
+    permission_classes =  [IsAuthenticated,ProjectIsAuthorOrReadOnly]
 
     def get_object(self, id, method):
         try:
@@ -91,7 +72,6 @@ class ProjectViewsetDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id, format=None):
-        # project = Project.objects.get(id=id)
         project = self.get_object(id, "put")
         serializer = ProjectSerializer(project, data=request.data)
         if serializer.is_valid():
@@ -106,12 +86,11 @@ class ProjectViewsetDetail(APIView):
 
  
 class UserFromProjectViewsetList(APIView):
+    permission_classes = [IsAuthenticated]
  
     def get(self, request, id, *args, **kwargs):
 
         contributor = Contributors.objects.filter(project=id)
-        # for user in contributor:
-        #     print(user.user)
         serializer = ContributorsSerializer(contributor, many=True)
         return Response(serializer.data)
     
@@ -123,21 +102,18 @@ class UserFromProjectViewsetList(APIView):
             validatedData = serializer.validated_data
             user_name = validatedData.get('user')
             for contributor in contributors:
-                print(contributor.user)
-                print(type(contributor.user))
-                print(user_name)
-                print(type(user_name))
+                # if user_name == contributor.user and project == validatedData.get('project'):
                 if user_name == contributor.user:
-                    print(str(contributor.user) + "already on this project")
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"Error": "this user is already a contributor for this project"}, status=status.HTTP_400_BAD_REQUEST)
 
-                
+            #force to save the contributor on the project 
             serializer.save(project=project)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserFromProjectViewsetDetail(APIView):
-    
+
+    permission_classes = [IsAuthenticated]
  
     def get(self, request, id, user_id, *args, **kwargs):
         contributor = Contributors.objects.filter(project=id).filter(user=user_id)
@@ -152,9 +128,9 @@ class UserFromProjectViewsetDetail(APIView):
 
 
 class IssueFromProjectViewsetList(APIView):
+    permission_classes = [IsAuthenticated]
  
     def get(self, request, id, *args, **kwargs):
-
         issues = Issue.objects.filter(project=id)
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data)
@@ -168,15 +144,28 @@ class IssueFromProjectViewsetList(APIView):
 
 class IssueFromProjectViewsetDetail(APIView):
 
-    permission_classes =  [IsAdminAuthenticated]
+    permission_classes = [IsAuthenticated, IssueIsAuthorOrReadOnly]
+ 
+    def get_object(self, id, method):
+        try:
+            obj = Issue.objects.get(id=id)
+            self.check_object_permissions(self.request, obj)
+            if method == "get" or method == "delete":
+                obj = Issue.objects.filter(id=id)
+            return obj
+        except Issue.DoesNotExist:
+            raise Http404
+
     def get(self, request, id, issue_id, *args, **kwargs):
-        issues = Issue.objects.filter(id=issue_id)
+        issues = self.get_object(issue_id, "get")
+        # issues = Issue.objects.filter(id=issue_id)
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data)
 
 
     def put(self, request, id, issue_id, format=None):
-        issue = Issue.objects.get(id=issue_id)
+        # issue = Issue.objects.get(id=issue_id)
+        issue = self.get_object(issue_id, "put")
         serializer = IssueSerializer(issue, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -185,12 +174,14 @@ class IssueFromProjectViewsetDetail(APIView):
     
  
     def delete(self, request, id, issue_id, format=None):
-        issue = Issue.objects.filter(id=issue_id)
+        issue = self.get_object(issue_id, "delete")
+        # issue = Issue.objects.filter(id=issue_id)
         issue.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentsFromUserFromProjectViewsetList(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, id, issue_id, *args, **kwargs):
 
@@ -208,15 +199,30 @@ class CommentsFromUserFromProjectViewsetList(APIView):
 
 class CommentsFromUserFromProjectViewsetDetail(APIView):
 
+    permission_classes = [IsAuthenticated, CommentsIsAuthorOrReadOnly]
+
+    def get_object(self, id, method):
+        #TODO get only comments from the id_issue
+        try:
+            obj = Comments.objects.get(id=id)
+            self.check_object_permissions(self.request, obj)
+            if method == "get" or method == "delete":
+                obj = Comments.objects.filter(id=id)
+            return obj
+        except Comments.DoesNotExist:
+            raise Http404
+
 
     def get(self, request, id, issue_id, comment_id, *args, **kwargs):
-        comment = Comments.objects.filter(id=comment_id)
+        comment = self.get_object(comment_id, "get")
+        # comment = Comments.objects.filter(id=comment_id)
         serializer = CommentsSerializer(comment, many=True)
         return Response(serializer.data)
 
 
     def put(self, request, id, issue_id, comment_id, format=None):
-        comment = Comments.objects.get(id=comment_id)
+        # comment = Comments.objects.get(id=comment_id)
+        comment = self.get_object(comment_id, "put")
         serializer = CommentsSerializer(comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -225,19 +231,14 @@ class CommentsFromUserFromProjectViewsetDetail(APIView):
     
  
     def delete(self, request, id, issue_id, comment_id, format=None):
-        comment = Comments.objects.filter(id=comment_id)
+        # comment = Comments.objects.filter(id=comment_id)
+        comment = self.get_object(comment_id, "delete")
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
 
-# http://127.0.0.1:8000/projects/1/users : rajoute pas a un projet spécifique , forcer l'id du project (voir avec postman)  OK
-#le faire en dur et ajouter id du projet  OK
+# tout le monde peut supprimer les contributeurs
 
-#bloquer les contributor par projet, une seule fois ! OK
-
-# message erreur si on ne met pas le bon id de projet c'est mieux ???
-#supprimer varaible initilisé en argument ?
-
-# expiraition token
+# reste a tester : permission pour http://127.0.0.1:8000/projects/1/issues/7
