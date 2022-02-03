@@ -81,8 +81,3 @@ class UsersIsAuthorOrReadOnly(BasePermission):
         return obj.author == request.user
 
 
-
-
-# 3 différents mais la meme chose ???
-# est ce que isAuthenticated utile ? ou juste la permission custom pour list et detail
-# seul le contributeur a accés au projet !
