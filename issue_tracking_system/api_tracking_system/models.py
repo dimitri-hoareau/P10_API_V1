@@ -28,6 +28,7 @@ class Contributors(models.Model):
         default=1) # supprimer le defautl
 
 
+
 class Issue(models.Model):
 
     title = models.CharField(max_length=255)

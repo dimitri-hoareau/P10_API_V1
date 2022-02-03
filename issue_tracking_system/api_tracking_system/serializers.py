@@ -18,8 +18,9 @@ class ProjectSerializer(ModelSerializer):
  
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', 'type']
-        # serializers.save()
+        fields = ['id', 'title', 'description', 'type', 'author']
+
+        # serializers.save() // surcharger la méthode save du modele serializer (et autjor ne sera pas partie du serializer) pour enregistrer automatiquement l'auteur
 
 class IssueSerializer(ModelSerializer):
 

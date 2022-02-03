@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
-from api_tracking_system.permissions import ProjectIsAuthorOrReadOnly, IssueIsAuthorOrReadOnly, CommentsIsAuthorOrReadOnly
+from api_tracking_system.permissions import ProjectIsAuthorOrReadOnly, IssueIsAuthorOrReadOnly, CommentsIsAuthorOrReadOnly, UsersIsAuthorOrReadOnly
  
 
 
@@ -113,7 +113,7 @@ class UserFromProjectViewsetList(APIView):
 
 class UserFromProjectViewsetDetail(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, UsersIsAuthorOrReadOnly]
  
     def get(self, request, id, user_id, *args, **kwargs):
         contributor = Contributors.objects.filter(project=id).filter(user=user_id)
@@ -239,6 +239,6 @@ class CommentsFromUserFromProjectViewsetDetail(APIView):
 
 
 
-# tout le monde peut supprimer les contributeurs
+# tout le monde peut supprimer les contributeurs // non seul le créateur du projet en question
 
 # reste a tester : permission pour http://127.0.0.1:8000/projects/1/issues/7
