@@ -15,12 +15,9 @@ class ContributorsSerializer(ModelSerializer):
         fields = ['id', 'permission', 'role', 'project', 'user']
 
 class ProjectSerializer(ModelSerializer):
- 
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', 'type', 'author']
-
-        # serializers.save() // surcharger la méthode save du modele serializer (et autjor ne sera pas partie du serializer) pour enregistrer automatiquement l'auteur
+        fields = ['id', 'title', 'description', 'type']
 
 class IssueSerializer(ModelSerializer):
 
@@ -28,21 +25,13 @@ class IssueSerializer(ModelSerializer):
  
     class Meta:
         model = Issue
-        fields = ['id', 'title', 'description', 'tag', 'status', 'created_time', 'priority', 'project', 'author', 'assignee' ]
+        fields = ['id', 'title', 'description', 'tag', 'status', 'created_time', 'priority', 'project', 'assignee' ]
 
 class CommentsSerializer(ModelSerializer):
  
     class Meta:
         model = Comments
-        fields = ['id', 'description', 'created_time', 'issue', 'author']
-
-
-# class IssuesFromProjectSerialize(ModelSerializer):
-
-#         class Meta:
-#             model = Comments
-#             fields = ['id', 'description', 'created_time', 'issue', 'author']
-
+        fields = ['id', 'description', 'created_time', 'issue']
 
 
 

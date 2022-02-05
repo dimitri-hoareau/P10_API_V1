@@ -33,7 +33,6 @@ class ProjectViewsetList(APIView):
 
     def get(self, request,  *args, **kwargs):
 
-        print(type(request.user))
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
@@ -41,7 +40,7 @@ class ProjectViewsetList(APIView):
     def post(self, request, format=None):
         serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -63,13 +62,6 @@ class ProjectViewsetDetail(APIView):
         projects = self.get_object(id, "get")
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
-
-    def post(self, request, id, format=None):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id, format=None):
         project = self.get_object(id, "put")
@@ -138,7 +130,7 @@ class IssueFromProjectViewsetList(APIView):
     def post(self, request, id, *args, **kwargs):
         serializer = IssueSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -192,7 +184,7 @@ class CommentsFromUserFromProjectViewsetList(APIView):
     def post(self, request, id, issue_id, *args, **kwargs):
         serializer = CommentsSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
