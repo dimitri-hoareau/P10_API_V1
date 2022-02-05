@@ -17,13 +17,7 @@ class Contributors(models.Model):
         ('READ_ONLY', 'Read only'),
         ('CREATE_READ_UPDATE_DELETE', 'Create / Read / Update /Delete'),
     )
-    # ROLE_CHOICES = (
-    #     ('CONTRIBUTOR', 'Contributor'),
-    #     ('AUTHOR', 'Author'),
-    # )
 
-    # permission = models.CharField(max_length=255)
-    # role = models.CharField(max_length=11, choices=ROLE_CHOICES)
     permission = models.CharField(max_length=60, choices =PERMISSION_CHOICE)
     role = models.CharField(max_length=50)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE, null=True)
