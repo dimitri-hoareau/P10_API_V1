@@ -13,19 +13,24 @@ class Project(models.Model):
         return self.title
 
 class Contributors(models.Model):
-    ROLE_CHOICES = (
-        ('CONTRIBUTOR', 'Contributor'),
-        ('AUTHOR', 'Author'),
+    PERMISSION_CHOICE = (
+        ('READ_ONLY', 'Read only'),
+        ('CREATE_READ_UPDATE_DELETE', 'Create / Read / Update /Delete'),
     )
+    # ROLE_CHOICES = (
+    #     ('CONTRIBUTOR', 'Contributor'),
+    #     ('AUTHOR', 'Author'),
+    # )
 
-    permission = models.CharField(max_length=255)
-    role = models.CharField(max_length=11, choices=ROLE_CHOICES)
+    # permission = models.CharField(max_length=255)
+    # role = models.CharField(max_length=11, choices=ROLE_CHOICES)
+    permission = models.CharField(max_length=60, choices =PERMISSION_CHOICE)
+    role = models.CharField(max_length=50)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, 
         related_name="followed_by", 
-        on_delete=models.CASCADE,
-        default=1) # supprimer le defautl
+        on_delete=models.CASCADE)
 
 
 
@@ -60,12 +65,3 @@ class Comments(models.Model):
     def __str__(self):
         return self.description
 
-
-
-# model c'est bon ?
-# table through contributor ?
-# assignee ?
-# project, on a author, mais comment savoir qui sont les contributor ?
-
-
-# endpoint /projects/{id}/users/    ou project id issue : la table project n'a pas d'issue

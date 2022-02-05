@@ -6,3 +6,4 @@ admin.site.register(Contributors)
 admin.site.register(Project)
 admin.site.register(Issue)
 admin.site.register(Comments)
+
