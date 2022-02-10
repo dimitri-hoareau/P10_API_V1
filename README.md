@@ -27,7 +27,8 @@ Then, you have to use postman or the curl command in your terminal
 
 Here is the url for the postman documentation of this API :  
 
-...
+* [Documentation](https://documenter.getpostman.com/view/11769436/UVeCQU3C#d9b4769f-b738-414b-b981-57d2451ff273  
+
 
 ## Contributing
 
