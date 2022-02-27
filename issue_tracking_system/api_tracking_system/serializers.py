@@ -1,10 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import  serializers
-from rest_framework.permissions import IsAuthenticated
-from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-from django.contrib.auth.hashers import make_password
  
 from .models import Contributors, Project, Issue, Comments
  
@@ -20,8 +16,6 @@ class ProjectSerializer(ModelSerializer):
         fields = ['id', 'title', 'description', 'type']
 
 class IssueSerializer(ModelSerializer):
-
-    # project = ProjectSerializer()
  
     class Meta:
         model = Issue
@@ -58,9 +52,3 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
-
-#comment avoir les infos détaillées pour author ?
-
-#         # serializers.save() overiding serialiser pour l'author

@@ -19,7 +19,7 @@ from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from api_tracking_system.views import *
-router = routers.SimpleRouter()
+# router = routers.SimpleRouter()
 
 # router.register('contributors', ContributorsViewset, basename='contributors')
 # # router.register('projects', ProjectViewset, basename='project')
@@ -33,7 +33,7 @@ urlpatterns = [
     path('login', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('signup/', RegisterApi.as_view(), name='signup'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('', include(router.urls)),
+    # path('', include(router.urls)),
     path('projects/', ProjectViewsetList.as_view(), name='project_list'),
     path('projects/<id>/', ProjectViewsetDetail.as_view(), name='project_detail'),
     path('projects/<id>/users', UserFromProjectViewsetList.as_view(), name='users_from_projet'),

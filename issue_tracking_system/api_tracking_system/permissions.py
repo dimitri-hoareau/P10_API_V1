@@ -1,6 +1,6 @@
-from operator import truediv
+
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import Contributors, Project, Issue, Comments
+from .models import Contributors
  
 
 class ProjectIsAuthorOrReadOnly(BasePermission):
@@ -29,8 +29,9 @@ class IssueIsAuthorOrReadOnly(BasePermission):
         return True
 
     def has_object_permission(self, request, view, obj):
+
         is_contributor = False
-        contributors = Contributors.objects.filter(project=obj.id)
+        contributors = Contributors.objects.filter(project=obj.project.id)
         for contributor in contributors:
             if request.user == contributor.user:
                 is_contributor = True
@@ -48,8 +49,9 @@ class CommentsIsAuthorOrReadOnly(BasePermission):
         return True
 
     def has_object_permission(self, request, view, obj):
+        print(obj)
         is_contributor = False
-        contributors = Contributors.objects.filter(project=obj.id)
+        contributors = Contributors.objects.filter(project=obj.issue.project.id)
         for contributor in contributors:
             if request.user == contributor.user:
                 is_contributor = True
@@ -69,7 +71,7 @@ class UsersIsAuthorOrReadOnly(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         is_contributor = False
-        contributors = Contributors.objects.filter(project=obj.id)
+        contributors = Contributors.objects.filter(project=obj[0].project_id)
         for contributor in contributors:
             if request.user == contributor.user:
                 is_contributor = True
@@ -79,5 +81,4 @@ class UsersIsAuthorOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS and is_contributor:
             return True
         return obj.author == request.user
-
 
