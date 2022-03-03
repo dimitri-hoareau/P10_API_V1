@@ -21,7 +21,7 @@ To start this project, you need to :
  ```
 pip install -r requirements.txt
 ```
--launch the app  
+- launch the app  
  ```
 python manage.py runserver
 ```
