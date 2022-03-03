@@ -16,11 +16,16 @@ Django Rest Framework 3.12.14
 
 To start this project, you need to :
 - clone the repo from this page.
-- lunch the virtualenvironment
+- create and lunch the virtualenvironment
 - install all the package mentionned in requierement.txt  :
  ```
 pip install -r requirements.txt
 ```
+-launch the app  
+ ```
+python manage.py runserver
+```
+
 Then, you have to use postman or the curl command in your terminal  
 
 * [Postman](https://www.postman.com/)
